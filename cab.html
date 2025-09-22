@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cab Booking App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      color: white;
+    }
+
+    .container {
+      background: white;
+      color: #2c5364;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      width: 100%;
+      max-width: 420px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #2c5364;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #1b374a;
+    }
+
+    .link {
+      text-align: center;
+      margin-top: 15px;
+    }
+
+    .link a {
+      color: #2c5364;
+      text-decoration: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .summary {
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- LOGIN PAGE -->
+    <div id="loginPage">
+      <h2>Cab Login</h2>
+      <input type="text" id="loginUser" placeholder="Email or Mobile" required>
+      <input type="password" id="loginPass" placeholder="Password" required>
+      <button onclick="goToBooking()">Login</button>
+      <div class="link">Don't have an account? <a onclick="showPage('signupPage')">Sign up</a></div>
+    </div>
+
+    <!-- SIGNUP PAGE -->
+    <div id="signupPage" class="hidden">
+      <h2>Cab Signup</h2>
+      <input type="text" placeholder="Full Name" required>
+      <input type="email" placeholder="Email" required>
+      <input type="tel" placeholder="Mobile Number" required>
+      <input type="password" placeholder="Create Password" required>
+      <button onclick="showPage('loginPage')">Sign Up</button>
+      <div class="link">Already have an account? <a onclick="showPage('loginPage')">Login</a></div>
+    </div>
+
+    <!-- BOOKING PAGE -->
+    <div id="bookingPage" class="hidden">
+      <h2>Book a Cab</h2>
+      <input type="text" id="pickup" placeholder="Pickup Location" required>
+      <input type="text" id="drop" placeholder="Drop Location" required>
+      <input type="datetime-local" id="datetime" required>
+      <select id="cabtype" required>
+        <option value="">-- Select Cab Type --</option>
+        <option value="mini">Mini</option>
+        <option value="sedan">Sedan</option>
+        <option value="suv">SUV</option>
+        <option value="auto">Auto</option>
+      </select>
+      <label><strong>Payment Mode:</strong> Cash Only</label>
+      <button onclick="confirmBooking()">Confirm Booking</button>
+    </div>
+
+    <!-- CONFIRMATION PAGE -->
+    <div id="confirmationPage" class="hidden">
+      <h2>Booking Confirmed ✅</h2>
+      <div class="summary" id="summary"></div>
+      <button onclick="showPage('bookingPage')">Book Another Ride</button>
+    </div>
+  </div>
+
+  <script>
+    const fareRates = {
+      mini: 100,
+      sedan: 150,
+      suv: 200,
+      auto: 80
+    };
+
+    function showPage(pageId) {
+      const pages = ['loginPage', 'signupPage', 'bookingPage', 'confirmationPage'];
+      pages.forEach(p => document.getElementById(p).classList.add('hidden'));
+      document.getElementById(pageId).classList.remove('hidden');
+    }
+
+    function goToBooking() {
+      // For demo, no actual auth
+      showPage('bookingPage');
+    }
+
+    function confirmBooking() {
+      const pickup = document.getElementById("pickup").value;
+      const drop = document.getElementById("drop").value;
+      const datetime = document.getElementById("datetime").value;
+      const cabtype = document.getElementById("cabtype").value;
+
+      if (!pickup || !drop || !datetime || !cabtype) {
+        alert("Please fill in all fields.");
+        return;
+      }
+
+      const fare = fareRates[cabtype] || 0;
+      const summary = `
+        <p><strong>Pickup:</strong> ${pickup}</p>
+        <p><strong>Drop:</strong> ${drop}</p>
+        <p><strong>Date & Time:</strong> ${new Date(datetime).toLocaleString()}</p>
+        <p><strong>Cab Type:</strong> ${cabtype.toUpperCase()}</p>
+        <p><strong>Payment:</strong> Cash</p>
+        <p><strong>Estimated Fare:</strong> ₹${fare}</p>
+      `;
+
+      document.getElementById("summary").innerHTML = summary;
+      showPage('confirmationPage');
+    }
+  </script>
+
+</body>
+</html>
